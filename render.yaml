@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: imad-portfolio-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: AI_KEY
+        sync: false
+      - key: AI_ENDPOINT
+        sync: false
+      - key: AI_MODEL
+        sync: false
+      - key: AI_MAX_TOKENS
+        value: "1000"
