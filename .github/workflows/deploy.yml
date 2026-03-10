@@ -3,6 +3,12 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "src/**"
+      - "index.html"
+      - "vite.config.js"
+      - "package.json"
+      - "package-lock.json"
 
 permissions:
   contents: read
