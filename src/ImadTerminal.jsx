@@ -6,7 +6,7 @@ import { TERMINAL_CSS } from "./utils/styles";
 export default function ImadTerminal() {
   const {
     lines, input, setInput, cwd, booted, talkMode,
-    matrixActive, setMatrixActive, glitch, aiLoading,
+    matrixActive, setMatrixActive, glitch, aiLoading, serverStatus,
     termRef, inputRef, handleKeyDown,
   } = useTerminal();
 
@@ -68,6 +68,7 @@ export default function ImadTerminal() {
           lines={lines}
           glitch={glitch}
           aiLoading={aiLoading}
+          serverStatus={serverStatus}
           booted={booted}
           talkMode={talkMode}
           cwd={cwd}

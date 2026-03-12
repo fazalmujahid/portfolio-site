@@ -17,6 +17,7 @@ export const TERMINAL_CSS = `
   @keyframes glitchShift { 0% { transform: translate(0); } 20% { transform: translate(-3px, 2px); } 40% { transform: translate(3px, -2px); } 60% { transform: translate(-2px, -1px); } 80% { transform: translate(2px, 1px); } 100% { transform: translate(0); } }
   @keyframes textGlitch { 0% { clip-path: inset(40% 0 61% 0); transform: translate(-3px); } 20% { clip-path: inset(92% 0 1% 0); transform: translate(3px); } 40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px); } 60% { clip-path: inset(25% 0 58% 0); transform: translate(2px); } 80% { clip-path: inset(54% 0 7% 0); transform: translate(-1px); } 100% { clip-path: inset(58% 0 43% 0); transform: translate(1px); } }
   @keyframes bootPulse { 0%,100% { text-shadow: 0 0 5px #4af626; } 50% { text-shadow: 0 0 20px #4af626, 0 0 40px #4af626; } }
+  @keyframes fadeSlideIn { 0% { opacity: 0; transform: translateX(-8px); } 100% { opacity: 1; transform: translateX(0); } }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }

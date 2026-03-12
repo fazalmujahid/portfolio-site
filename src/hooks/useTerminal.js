@@ -3,6 +3,7 @@ import { BOOT_SEQUENCE, ASCII_LOGO } from "../data/resumeData";
 import { executeCommand as runCommand } from "../commands/commands";
 import { lookupDir } from "../utils/fileSystemHelpers";
 import { useAIChat } from "./useAIChat";
+import { useWarmup } from "./useWarmup";
 
 export function useTerminal() {
   const [lines, setLines] = useState([]);
@@ -22,6 +23,7 @@ export function useTerminal() {
   }, []);
 
   const { aiLoading, setChatHistory, sendToAI } = useAIChat(addLines);
+  const { serverStatus } = useWarmup();
 
   const triggerGlitch = useCallback(() => {
     setGlitch(true);
@@ -161,7 +163,7 @@ export function useTerminal() {
 
   return {
     lines, input, setInput, cwd, booted, talkMode,
-    matrixActive, setMatrixActive, glitch, aiLoading,
+    matrixActive, setMatrixActive, glitch, aiLoading, serverStatus,
     termRef, inputRef, handleKeyDown,
   };
 }

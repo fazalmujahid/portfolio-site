@@ -1,9 +1,10 @@
 import { forwardRef } from "react";
 import TerminalLine from "./TerminalLine";
 import TerminalInput from "./TerminalInput";
+import AILoadingSequence from "./AILoadingSequence";
 
 const TerminalScreen = forwardRef(function TerminalScreen(
-  { lines, glitch, aiLoading, booted, talkMode, cwd, input, onInputChange, onKeyDown, inputRef },
+  { lines, glitch, aiLoading, serverStatus, booted, talkMode, cwd, input, onInputChange, onKeyDown, inputRef },
   termRef
 ) {
   return (
@@ -76,12 +77,7 @@ const TerminalScreen = forwardRef(function TerminalScreen(
           />
         ))}
 
-        {aiLoading && (
-          <div style={{ color: "#4af6f0", textShadow: "0 0 6px #4af6f0" }}>
-            <span style={{ animation: "bootPulse 1s infinite" }}>AI processing</span>
-            <span style={{ animation: "blink 1s infinite" }}>...</span>
-          </div>
-        )}
+        {aiLoading && <AILoadingSequence serverStatus={serverStatus} />}
 
         {booted && (
           <TerminalInput

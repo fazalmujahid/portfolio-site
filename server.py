@@ -1,23 +1,27 @@
 import os
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 
 load_dotenv()
 
 import uvicorn
-from fastapi import FastAPI
+import psycopg2
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from openai import OpenAI
+from anthropic import AnthropicFoundry
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
 API_KEY = os.environ.get("AI_KEY")
-ENDPOINT = os.environ.get("AI_ENDPOINT", "https://ai-coco-foundry-resource.services.ai.azure.com/openai/v1/")
-MODEL = os.environ.get("AI_MODEL", "grok-3-mini")
+ENDPOINT = os.environ.get("AI_ENDPOINT", "https://ai-coco-foundry-resource.services.ai.azure.com/anthropic/")
+MODEL = os.environ.get("AI_MODEL", "claude-haiku-4-5")
 MAX_TOKENS = int(os.environ.get("AI_MAX_TOKENS", "1000"))
 
-client = OpenAI(base_url=ENDPOINT, api_key=API_KEY)
+client = AnthropicFoundry(api_key=API_KEY, base_url=ENDPOINT)
 
 SYSTEM_PROMPT = """You are Imad's AI assistant running inside a retro hacker terminal on his portfolio site.
 You answer questions about Imad based ONLY on the data below.
@@ -43,19 +47,46 @@ PROJECTS:
 
 
 class ChatRequest(BaseModel):
+    username: str = "anonymous"
     messages: list[dict] = []
+
+
+def log_chat(username, query, reply):
+    if not DATABASE_URL:
+        return
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO chat_logs (username, query, reply, created_at) VALUES (%s, %s, %s, %s)",
+            (username, query, reply, datetime.now(timezone.utc)),
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"DB log error: {e}")
+
+
+@app.get("/api/health")
+async def health():
+    return {"status": "ok"}
 
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
-    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + req.messages
+    user_messages = [m for m in req.messages if m.get("role") != "system"]
+    query = user_messages[-1]["content"] if user_messages else ""
     try:
-        completion = client.chat.completions.create(
+        message = client.messages.create(
             model=MODEL,
             max_tokens=MAX_TOKENS,
-            messages=full_messages,
+            system=SYSTEM_PROMPT,
+            messages=user_messages,
         )
-        return {"reply": completion.choices[0].message.content}
+        reply = message.content[0].text
+        log_chat(req.username, query, reply)
+        return {"reply": reply}
     except Exception as e:
         return {"error": str(e)}
 
