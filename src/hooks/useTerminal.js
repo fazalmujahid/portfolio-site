@@ -65,7 +65,17 @@ export function useTerminal(isMobile) {
 
   const executeCommand = useCallback((cmd) => {
     const trimmed = cmd.trim();
-    if (!trimmed) return;
+    const cwdShort = cwd === "~" ? "~" : cwd.split("/").pop();
+    const promptPrefix = talkMode
+      ? "ai>"
+      : isMobile
+      ? `imad:${cwdShort}$`
+      : `imad@portfolio:${cwd}$`;
+
+    if (!trimmed) {
+      addLines([{ text: promptPrefix, type: "prompt" }]);
+      return;
+    }
 
     setHistory((prev) => [trimmed, ...prev]);
     setHistIdx(-1);
@@ -75,7 +85,7 @@ export function useTerminal(isMobile) {
       if (trimmed.toLowerCase() === "exit" || trimmed.toLowerCase() === "quit") {
         setTalkMode(false);
         addLines([
-          { text: `imad@portfolio:${cwd}$ ${trimmed}`, type: "prompt" },
+          { text: `${promptPrefix} ${trimmed}`, type: "prompt" },
           { text: "Exiting AI chat mode. Back to terminal.", type: "system" },
         ]);
         return;
@@ -85,7 +95,7 @@ export function useTerminal(isMobile) {
       return;
     }
 
-    addLines([{ text: `imad@portfolio:${cwd}$ ${trimmed}`, type: "prompt" }]);
+    addLines([{ text: `${promptPrefix} ${trimmed}`, type: "prompt" }]);
 
     const parts = trimmed.split(/\s+/);
     const command = parts[0].toLowerCase();
