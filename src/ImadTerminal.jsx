@@ -1,16 +1,28 @@
+import { useState, useEffect, useCallback } from "react";
 import MatrixRain from "./components/MatrixRain";
 import TerminalScreen from "./components/TerminalScreen";
+import MobileBanner from "./components/MobileBanner.jsx";
 import { useTerminal } from "./hooks/useTerminal";
 import { useIsMobile } from "./hooks/useIsMobile";
 import { TERMINAL_CSS } from "./utils/styles";
 
 export default function ImadTerminal() {
   const isMobile = useIsMobile();
+  const [showBanner, setShowBanner] = useState(isMobile);
   const {
     lines, input, setInput, cwd, booted, talkMode,
     matrixActive, setMatrixActive, glitch, aiLoading, serverStatus,
     termRef, inputRef, handleKeyDown,
   } = useTerminal(isMobile);
+
+  // Auto-dismiss after 3 seconds
+  useEffect(() => {
+    if (!showBanner) return;
+    const timer = setTimeout(() => setShowBanner(false), 8000);
+    return () => clearTimeout(timer);
+  }, [showBanner]);
+
+  const dismissBanner = useCallback(() => setShowBanner(false), []);
 
   return (
     <div
@@ -26,6 +38,8 @@ export default function ImadTerminal() {
       onClick={() => inputRef.current?.focus()}
     >
       <style>{TERMINAL_CSS}</style>
+
+      {showBanner && <MobileBanner onDismiss={dismissBanner} />}
 
       {matrixActive && <MatrixRain onExit={() => setMatrixActive(false)} />}
 

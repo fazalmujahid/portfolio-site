@@ -92,3 +92,18 @@ export const BOOT_SEQUENCE = [
   "",
   'System ready. Type "help" to get started.',
 ];
+
+export const BOOT_SEQUENCE_MOBILE = [
+  "BIOS v4.2.0 — Imad Systems",
+  "Memory........... OK [∞ GB]",
+  "Kernel modules... OK",
+  "Experience....... OK [8+ years]",
+  "Network daemon... OK",
+  "AI core.......... OK [Claude]",
+  "Resume data...... OK [8 projects]",
+  "Secure conn...... OK",
+  "",
+  "ImadOS v8.0 LTS",
+  "",
+  'Type "help" to get started.',
+];

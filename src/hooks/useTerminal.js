@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { BOOT_SEQUENCE, ASCII_LOGO } from "../data/resumeData";
+import { BOOT_SEQUENCE, BOOT_SEQUENCE_MOBILE, ASCII_LOGO } from "../data/resumeData";
 import { executeCommand as runCommand } from "../commands/commands";
 import { lookupDir } from "../utils/fileSystemHelpers";
 import { useAIChat } from "./useAIChat";
@@ -32,10 +32,11 @@ export function useTerminal(isMobile) {
 
   // Boot sequence
   useEffect(() => {
+    const bootSeq = isMobile ? BOOT_SEQUENCE_MOBILE : BOOT_SEQUENCE;
     let i = 0;
     const timer = setInterval(() => {
-      if (i < BOOT_SEQUENCE.length) {
-        setLines((prev) => [...prev, { text: BOOT_SEQUENCE[i], type: "system" }]);
+      if (i < bootSeq.length) {
+        setLines((prev) => [...prev, { text: bootSeq[i], type: "system" }]);
         i++;
       } else {
         clearInterval(timer);
