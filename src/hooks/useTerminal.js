@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { BOOT_SEQUENCE, ASCII_LOGO } from "../data/resumeData";
+import { BOOT_SEQUENCE, BOOT_SEQUENCE_MOBILE, ASCII_LOGO } from "../data/resumeData";
 import { executeCommand as runCommand } from "../commands/commands";
 import { lookupDir } from "../utils/fileSystemHelpers";
 import { useAIChat } from "./useAIChat";
 import { useWarmup } from "./useWarmup";
 
-export function useTerminal() {
+export function useTerminal(isMobile) {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
   const [cwd, setCwd] = useState("~");
@@ -32,10 +32,11 @@ export function useTerminal() {
 
   // Boot sequence
   useEffect(() => {
+    const bootSeq = isMobile ? BOOT_SEQUENCE_MOBILE : BOOT_SEQUENCE;
     let i = 0;
     const timer = setInterval(() => {
-      if (i < BOOT_SEQUENCE.length) {
-        setLines((prev) => [...prev, { text: BOOT_SEQUENCE[i], type: "system" }]);
+      if (i < bootSeq.length) {
+        setLines((prev) => [...prev, { text: bootSeq[i], type: "system" }]);
         i++;
       } else {
         clearInterval(timer);
@@ -111,6 +112,7 @@ export function useTerminal() {
       setChatHistory,
       triggerGlitch,
       setMatrixActive,
+      isMobile,
     });
 
     if (result === "CLEAR") {
@@ -118,7 +120,7 @@ export function useTerminal() {
     } else if (Array.isArray(result)) {
       addLines(result);
     }
-  }, [talkMode, cwd, history, addLines, sendToAI, setChatHistory, triggerGlitch]);
+  }, [talkMode, cwd, history, addLines, sendToAI, setChatHistory, triggerGlitch, isMobile]);
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Enter") {

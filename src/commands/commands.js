@@ -1,10 +1,45 @@
-import { NEOFETCH, FORTUNES } from "../data/resumeData";
+import { NEOFETCH, NEOFETCH_MOBILE, FORTUNES } from "../data/resumeData";
 import { FILE_SYSTEM } from "../data/fileSystem";
 import { resolvePath, lookupDir, lookupFile } from "../utils/fileSystemHelpers";
 
-export function executeCommand(command, args, cwd, { setCwd, setTalkMode, setChatHistory, triggerGlitch, setMatrixActive }) {
+// Strip box-drawing borders from file content for mobile readability
+function stripBoxDrawing(text) {
+  return text
+    .split("\n")
+    .map((line) => {
+      // Remove lines that are purely box borders (═, ─, ╔, ╗, ╚, ╝, ╠, ╣, ┌, ┐, └, ┘, ├, ┤)
+      if (/^[╔╗╚╝╠╣═║┌┐└┘├┤─┬┴\s]+$/.test(line)) return null;
+      // Strip leading/trailing box chars (║, │) and trim
+      return line.replace(/^[║│]\s*/, "").replace(/\s*[║│]$/, "");
+    })
+    .filter((line) => line !== null)
+    .join("\n");
+}
+
+export function executeCommand(command, args, cwd, { setCwd, setTalkMode, setChatHistory, triggerGlitch, setMatrixActive, isMobile }) {
   switch (command) {
     case "help":
+      if (isMobile) {
+        return [
+          { text: "", type: "blank" },
+          { text: "AVAILABLE COMMANDS", type: "system" },
+          { text: "──────────────────", type: "system" },
+          { text: "ls [dir]     List directory", type: "system" },
+          { text: "cd <dir>     Change directory", type: "system" },
+          { text: "cat <file>   Read file", type: "system" },
+          { text: "talk         AI chat mode", type: "system" },
+          { text: "neofetch     System info", type: "system" },
+          { text: "whoami       Who is Imad?", type: "system" },
+          { text: "clear        Clear terminal", type: "system" },
+          { text: "history      Command history", type: "system" },
+          { text: "fortune      Fortune cookie", type: "system" },
+          { text: "tree         Directory tree", type: "system" },
+          { text: "ping <host>  Ping a host", type: "system" },
+          { text: "matrix       ???", type: "system" },
+          { text: "coffee       Essential", type: "system" },
+          { text: "hack <tgt>   Educational", type: "system" },
+        ];
+      }
       return [
         { text: "", type: "blank" },
         { text: "╔═══════════════════════════════════════════════╗", type: "system" },
@@ -64,7 +99,8 @@ export function executeCommand(command, args, cwd, { setCwd, setTalkMode, setCha
       const target = resolvePath(cwd, args);
       const entry = lookupFile(target);
       if (entry && entry.type === "file") {
-        return [{ text: "", type: "blank" }, { text: entry.content, type: "output" }];
+        const content = isMobile ? stripBoxDrawing(entry.content) : entry.content;
+        return [{ text: "", type: "blank" }, { text: content, type: "output" }];
       }
       if (entry && entry.type === "dir") {
         return [{ text: `cat: ${args}: Is a directory`, type: "error" }];
@@ -75,6 +111,15 @@ export function executeCommand(command, args, cwd, { setCwd, setTalkMode, setCha
     case "talk":
       setTalkMode(true);
       setChatHistory([]);
+      if (isMobile) {
+        return [
+          { text: "", type: "blank" },
+          { text: "AI CHAT MODE ACTIVATED", type: "ai" },
+          { text: "──────────────────────", type: "ai" },
+          { text: "Ask me anything about Imad.", type: "ai" },
+          { text: 'Type "exit" to return.', type: "ai" },
+        ];
+      }
       return [
         { text: "", type: "blank" },
         { text: "╔═══════════════════════════════════════════════╗", type: "ai" },
@@ -85,7 +130,7 @@ export function executeCommand(command, args, cwd, { setCwd, setTalkMode, setCha
       ];
 
     case "neofetch":
-      return [{ text: NEOFETCH, type: "ascii" }];
+      return [{ text: isMobile ? NEOFETCH_MOBILE : NEOFETCH, type: "ascii" }];
 
     case "whoami":
       return [

@@ -40,6 +40,33 @@ export const NEOFETCH = `
                                    Icons: Retro
                                    Lang: C#, Python, JS, TS`;
 
+export const NEOFETCH_MOBILE = `
+   ╭──────────────────╮
+   │  ┌──┐  ┌──┐     │
+   │  │░░│  │░░│     │
+   │  └──┘  └──┘     │
+   │      ╭──╮       │
+   │      ╰──╯       │
+   │   ╰────────╯    │
+   ╰──────────────────╯
+  ████████████████████████
+
+  imad@portfolio
+  ──────────────
+  OS: ImadOS v8.0 LTS
+  Host: Nagarro Corp
+  Kernel: .NET-Core-8.0
+  Uptime: 8 years
+  Shell: imad-sh 4.2
+  Terminal: CRT-9000
+  CPU: Brain @ ∞ GHz
+  GPU: Imagination RTX
+  Memory: Lots / Unlimited
+  Disk: 8+ years of XP
+  Theme: Phosphor Green
+  Icons: Retro
+  Lang: C#, Python, JS, TS`;
+
 export const FORTUNES = [
   '"There are only two hard things in CS: cache invalidation, naming things, and off-by-one errors."',
   '"It works on my machine." — Every developer, since the dawn of time.',
@@ -64,4 +91,19 @@ export const BOOT_SEQUENCE = [
   "ImadOS v8.0 LTS (GNU/Linux 6.1.0-imad amd64)",
   "",
   'System ready. Type "help" to get started.',
+];
+
+export const BOOT_SEQUENCE_MOBILE = [
+  "BIOS v4.2.0 — Imad Systems",
+  "Memory........... OK [∞ GB]",
+  "Kernel modules... OK",
+  "Experience....... OK [8+ years]",
+  "Network daemon... OK",
+  "AI core.......... OK [Claude]",
+  "Resume data...... OK [8 projects]",
+  "Secure conn...... OK",
+  "",
+  "ImadOS v8.0 LTS",
+  "",
+  'Type "help" to get started.',
 ];

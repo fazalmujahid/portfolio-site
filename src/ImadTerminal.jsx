@@ -1,29 +1,45 @@
+import { useState, useEffect, useCallback } from "react";
 import MatrixRain from "./components/MatrixRain";
 import TerminalScreen from "./components/TerminalScreen";
+import MobileBanner from "./components/MobileBanner.jsx";
 import { useTerminal } from "./hooks/useTerminal";
+import { useIsMobile } from "./hooks/useIsMobile";
 import { TERMINAL_CSS } from "./utils/styles";
 
 export default function ImadTerminal() {
+  const isMobile = useIsMobile();
+  const [showBanner, setShowBanner] = useState(isMobile);
   const {
     lines, input, setInput, cwd, booted, talkMode,
     matrixActive, setMatrixActive, glitch, aiLoading, serverStatus,
     termRef, inputRef, handleKeyDown,
-  } = useTerminal();
+  } = useTerminal(isMobile);
+
+  // Auto-dismiss after 3 seconds
+  useEffect(() => {
+    if (!showBanner) return;
+    const timer = setTimeout(() => setShowBanner(false), 8000);
+    return () => clearTimeout(timer);
+  }, [showBanner]);
+
+  const dismissBanner = useCallback(() => setShowBanner(false), []);
 
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         background: "#111",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 20,
+        padding: isMobile ? 4 : 20,
         fontFamily: "monospace",
       }}
       onClick={() => inputRef.current?.focus()}
     >
       <style>{TERMINAL_CSS}</style>
+
+      {showBanner && <MobileBanner onDismiss={dismissBanner} />}
 
       {matrixActive && <MatrixRain onExit={() => setMatrixActive(false)} />}
 
@@ -32,10 +48,10 @@ export default function ImadTerminal() {
         style={{
           width: "100%",
           maxWidth: 960,
-          height: "90vh",
+          height: isMobile ? "100dvh" : "90vh",
           background: "#1a1a1a",
-          borderRadius: 24,
-          padding: "18px 18px 30px",
+          borderRadius: isMobile ? 12 : 24,
+          padding: isMobile ? "8px 6px 14px" : "18px 18px 30px",
           boxShadow: "0 0 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
@@ -46,20 +62,20 @@ export default function ImadTerminal() {
         {/* Monitor top bar */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          marginBottom: 12, padding: "0 8px",
+          marginBottom: isMobile ? 6 : 12, padding: "0 8px",
         }}>
-          <div style={{ display: "flex", gap: 8 }}>
-            <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56" }} />
-            <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
-            <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f" }} />
+          <div style={{ display: "flex", gap: isMobile ? 6 : 8 }}>
+            <div style={{ width: isMobile ? 8 : 12, height: isMobile ? 8 : 12, borderRadius: "50%", background: "#ff5f56" }} />
+            <div style={{ width: isMobile ? 8 : 12, height: isMobile ? 8 : 12, borderRadius: "50%", background: "#ffbd2e" }} />
+            <div style={{ width: isMobile ? 8 : 12, height: isMobile ? 8 : 12, borderRadius: "50%", background: "#27c93f" }} />
           </div>
           <div style={{
-            fontSize: 11, color: "#666", fontFamily: "'Fira Code', monospace",
+            fontSize: isMobile ? 9 : 11, color: "#666", fontFamily: "'Fira Code', monospace",
             letterSpacing: "0.1em",
           }}>
-            CRT-9000 — imad@portfolio
+            {isMobile ? "CRT-9000" : "CRT-9000 — imad@portfolio"}
           </div>
-          <div style={{ width: 44 }} />
+          <div style={{ width: isMobile ? 30 : 44 }} />
         </div>
 
         {/* Screen */}
@@ -76,15 +92,16 @@ export default function ImadTerminal() {
           onInputChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           inputRef={inputRef}
+          isMobile={isMobile}
         />
 
         {/* Monitor bottom label */}
         <div style={{
-          textAlign: "center", marginTop: 10,
-          fontSize: 10, color: "#444", fontFamily: "'Fira Code', monospace",
+          textAlign: "center", marginTop: isMobile ? 6 : 10,
+          fontSize: isMobile ? 8 : 10, color: "#444", fontFamily: "'Fira Code', monospace",
           letterSpacing: "0.2em", textTransform: "uppercase",
         }}>
-          ImadOS v8.0 — Powered by Claude AI — CRT-9000 Series
+          {isMobile ? "ImadOS v8.0 — Claude AI" : "ImadOS v8.0 — Powered by Claude AI — CRT-9000 Series"}
         </div>
       </div>
     </div>
