@@ -19,6 +19,7 @@ export const TERMINAL_CSS = `
   @keyframes bootPulse { 0%,100% { text-shadow: 0 0 5px #4af626; } 50% { text-shadow: 0 0 20px #4af626, 0 0 40px #4af626; } }
   @keyframes fadeSlideIn { 0% { opacity: 0; transform: translateX(-8px); } 100% { opacity: 1; transform: translateX(0); } }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
   ::-webkit-scrollbar-thumb { background: #4af62644; border-radius: 3px; }

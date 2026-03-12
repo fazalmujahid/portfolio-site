@@ -7,6 +7,7 @@ export default function TerminalLine({ line, glitch, isRecent }) {
         color: getLineColor(line.type),
         whiteSpace: "pre-wrap",
         wordBreak: "break-word",
+        overflowX: "auto",
         textShadow: line.type === "ascii"
           ? "0 0 8px #4af626"
           : line.type === "ai"

@@ -1,9 +1,15 @@
 import { forwardRef } from "react";
 
 const TerminalInput = forwardRef(function TerminalInput(
-  { input, onChange, onKeyDown, disabled, talkMode, cwd },
+  { input, onChange, onKeyDown, disabled, talkMode, cwd, isMobile },
   ref
 ) {
+  const prompt = talkMode
+    ? "ai>"
+    : isMobile
+    ? `imad:${cwd === "~" ? "~" : cwd.split("/").pop()}$`
+    : `imad@portfolio:${cwd}$`;
+
   return (
     <div style={{ display: "flex", alignItems: "center", marginTop: 2 }}>
       <span
@@ -14,7 +20,7 @@ const TerminalInput = forwardRef(function TerminalInput(
           flexShrink: 0,
         }}
       >
-        {talkMode ? "ai>" : `imad@portfolio:${cwd}$`}
+        {prompt}
       </span>
       <input
         ref={ref}
@@ -24,25 +30,33 @@ const TerminalInput = forwardRef(function TerminalInput(
         disabled={disabled}
         autoFocus
         spellCheck={false}
+        inputMode="text"
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
         style={{
           background: "transparent",
           border: "none",
           outline: "none",
           color: "#b8c4b8",
           fontFamily: "'Fira Code', monospace",
-          fontSize: 13.5,
+          fontSize: isMobile ? 16 : 13.5,
           flex: 1,
           caretColor: "#4af626",
           textShadow: "0 0 4px rgba(74,246,38,0.3)",
+          ...(isMobile && {
+            transform: "scale(0.85)",
+            transformOrigin: "left center",
+          }),
         }}
       />
       <span
         style={{
-          width: 8,
-          height: 18,
+          width: isMobile ? 6 : 8,
+          height: isMobile ? 14 : 18,
           background: "#4af626",
           animation: "blink 1s step-end infinite",
-          marginLeft: -8,
+          marginLeft: isMobile ? -6 : -8,
           opacity: 0.8,
         }}
       />

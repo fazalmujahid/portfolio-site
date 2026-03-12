@@ -4,7 +4,7 @@ import TerminalInput from "./TerminalInput";
 import AILoadingSequence from "./AILoadingSequence";
 
 const TerminalScreen = forwardRef(function TerminalScreen(
-  { lines, glitch, aiLoading, serverStatus, booted, talkMode, cwd, input, onInputChange, onKeyDown, inputRef },
+  { lines, glitch, aiLoading, serverStatus, booted, talkMode, cwd, input, onInputChange, onKeyDown, inputRef, isMobile },
   termRef
 ) {
   return (
@@ -61,10 +61,10 @@ const TerminalScreen = forwardRef(function TerminalScreen(
           position: "absolute",
           inset: 0,
           overflowY: "auto",
-          padding: "16px 20px",
+          padding: isMobile ? "8px" : "16px 20px",
           fontFamily: "'Fira Code', monospace",
-          fontSize: 13.5,
-          lineHeight: 1.7,
+          fontSize: isMobile ? "clamp(11px, 3.2vw, 13.5px)" : 13.5,
+          lineHeight: isMobile ? 1.5 : 1.7,
           zIndex: 2,
         }}
       >
@@ -88,6 +88,7 @@ const TerminalScreen = forwardRef(function TerminalScreen(
             disabled={aiLoading}
             talkMode={talkMode}
             cwd={cwd}
+            isMobile={isMobile}
           />
         )}
       </div>

@@ -5,7 +5,7 @@ import { lookupDir } from "../utils/fileSystemHelpers";
 import { useAIChat } from "./useAIChat";
 import { useWarmup } from "./useWarmup";
 
-export function useTerminal() {
+export function useTerminal(isMobile) {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
   const [cwd, setCwd] = useState("~");
@@ -111,6 +111,7 @@ export function useTerminal() {
       setChatHistory,
       triggerGlitch,
       setMatrixActive,
+      isMobile,
     });
 
     if (result === "CLEAR") {
@@ -118,7 +119,7 @@ export function useTerminal() {
     } else if (Array.isArray(result)) {
       addLines(result);
     }
-  }, [talkMode, cwd, history, addLines, sendToAI, setChatHistory, triggerGlitch]);
+  }, [talkMode, cwd, history, addLines, sendToAI, setChatHistory, triggerGlitch, isMobile]);
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Enter") {
